@@ -4,7 +4,7 @@ the best products on one platform! This app is all about saving the time that yo
 your choice. This project combines various technical challenges such as Web scraping,
 image detection, object detection, data analysis and recommendation engine.
 
-Information about the files:
+MANUAL:
 CleanData.ipynb file cleans the data of all products and stores a cleaned data string back in MongoDB for all products. This string is later used for Search By Text
 TopBottom.ipynb is our model that detects whether an image is a top or bottom. This file trains our data
 Topbottom1.py predicts whether a given image is a top or bottom. It uses the model trained TopBottom.ipynb
