@@ -1,0 +1,182 @@
+@import '~antd/dist/antd.css';
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+.App{
+text-align: left;
+}
+.ant-layout-header{
+  padding-top: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  background-color: white;
+  align-items: center;
+  
+}
+.logout .ant-btn-primary {
+    float: right;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(0, 173, 107);
+    border-color: rgb(0, 173, 107);
+    margin-top: 5px;
+    margin-left: 50px;
+}
+
+.logout .ant-btn-primary:hover {
+  float: right;
+  background-color: rgb(0, 173, 144);
+  color: white;
+  border-color: rgb(0, 173, 107);
+  margin-top: 5px;
+  margin-left: 50px;
+  box-shadow: black;
+}
+
+.ant-layout-content{
+  height: 1800px;
+  background-color: white;
+}
+.ant-layout-footer{
+  background-color: black;
+  color: white;
+  
+  text-align: center;
+}
+.container-breadcrumbs .ant-col-24{
+    margin: 10px;
+    background-color: white;
+}
+.cont-feature-left{
+  margin-top:120px;
+  margin-left:120px;
+  width: 40%;
+  justify-content: center;
+}
+.cont-feature-right{
+  float: right;
+  margin-top:120px;
+  margin-right:120px;
+  width: 40%;
+  justify-content: right;
+}
+.title-feature{
+  font-size: 30px;
+  font-weight: bolder;
+  color: rgb(102, 102, 102);
+}
+.para-feature-left{
+
+}
+.para-feature-right{
+}
+.title-feature{
+  font-size: 30px;
+  font-weight: bolder;
+  color: rgb(102, 102, 102);
+}
+.logo img{
+  align-items: center;
+  float: left;
+  width: 60px;
+}
+.feature-img-right img{
+  float: right;
+}
+.feature-img-left img{
+  float: left;
+}
+.btn-shopforme{
+  justify-content: center;
+}
+.btn-shopforme .ant-btn-primary{
+  /* background-color: rgb(0, 175, 175); */
+  background-image: linear-gradient(#09C182,#14E1BE);
+  border-color: transparent;
+  border-radius: 30px;
+  width: 100px;
+  font-weight: bolder;
+  margin-top: 10px;
+  box-shadow: none;
+}
+.btn-shopforme .ant-btn-primary:hover{
+  /* background-color: rgb(0, 175, 175); */
+  background-image: linear-gradient(white,white);
+  color: #14E1BE;
+  border-color: #14E1BE;
+  border-radius: 30px;
+  font-weight: bolder;
+  box-shadow: none;
+}
+.btn-wishlist .ant-btn-primary{
+  /* background-color: rgb(0, 175, 175); */
+  background-image: linear-gradient(#00B8DF,#43F2FF);
+  border-color: transparent;
+  border-radius: 30px;
+  width: 100px;
+  font-weight: bolder;
+  margin-top: 10px;
+  float: inline-end;
+  box-shadow: none;
+}
+.btn-wishlist .ant-btn-primary:hover{
+  /* background-color: rgb(0, 175, 175); */
+  background-image: linear-gradient(white,white);
+  color: #00B8DF;
+  border-color: #00B8DF;
+  border-radius: 30px;
+  font-weight: bolder;
+  box-shadow: none;
+}
+
+.header-btn .ant-btn-primary{
+  margin-right: 0px;
+  float: right;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgb(133, 133, 133);
+  border-color:rgba(255, 255, 255, 0);
+  box-shadow: none;
+  margin-top: 5px;
+}
+
+.header-btn .ant-btn-primary:hover{
+  margin-right: 0px;
+  float: right;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgb(0, 173, 144);
+  border-color:rgba(150, 150, 150, 0.945);
+  margin-top: 5px;
+}
+
+
+.vl{
+  margin-right: 20px;
+  height: 30px;
+  width: 1px;
+  background-color: rgb(107, 107, 107);
+  float: right;
+  margin-top: 7px;
+  margin-left: 30px;
+}
+
+.hl{
+  background-color: rgb(156, 156, 156);
+  width: 100%;
+  height: 5px;
+  justify-content: center;
+  align-items: center;
+}
+.container-social-media-btn img{
+  margin-right: 20px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+
+
+.fb-btn{
+  float: right;
+  width: 15px;
+}
+.insta-btn{
+  float: right;
+  width: 21px;
+}
