@@ -10,3 +10,12 @@ efficient combinations based on the user’s personal style.
 This app is all about saving the time that you spend on browsing and searching for items of
 your choice. This project combines various technical challenges such as Web scraping,
 image detection, object detection, data analysis and recommendation engine.
+
+We've used Flask JS API for communication of data between our UI, which is React JS, and
+the Python backend scripts, which process the query through the required algorithm, by
+fetching the required data from MongoDB. So React and Flask doesn't has to interact with
+MongoDB, python scripts maintain a standalone relationship. If there will be required, a
+direct communication between React and Mongo DB, Express JS will be used, hence the 
+MERN stack will be deployed. 
+
+
