@@ -19,4 +19,4 @@ CleanData.ipynb file cleans the data of all products and stores a cleaned data s
 TopBottom.ipynb is our model that detects whether an image is a top or bottom. This file trains our data
 Topbottom1.py predicts whether a given image is a top or bottom. It uses the model trained TopBottom.ipynb
 WebScraping.ipynb scrapes all the websites and stores their data in MongoDB
->>>>>>> a4640945fb92f0e73f6a6b51b54b3f6dd63a5009
+
