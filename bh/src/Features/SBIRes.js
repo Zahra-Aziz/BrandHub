@@ -1,22 +1,17 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import './SBTRes.css'
+import './SBIRes.css'
 import { Button } from 'antd';
 import { Layout } from 'antd';
 import { Typography } from 'antd';
 import logo from '../assets/Logo.png';
-import bg from '../assets/bg.jpg';
 import fb from '../assets/fb.PNG';
-import men from '../assets/men.jpg'
 import insta from '../assets/insta.PNG';
 import { Row, Col } from 'antd';
 import { Breadcrumb } from 'antd';
 import { PoweroffOutlined, UserOutlined, HomeOutlined, SearchOutlined } from '@ant-design/icons';
-import {Route , Switch, Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import '../App.css';
 import { Input } from 'antd';
-import { Upload, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import { Image } from 'antd';
 
@@ -25,7 +20,7 @@ const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5001'
+  baseURL: 'http://127.0.0.1:5000'
 })
 
 const urlConvert = function (url){
@@ -41,43 +36,38 @@ const urlConvert = function (url){
   return newURL;
 }
 
-class SBTRes extends Component {
+class SBIRes extends Component {
 
   state = {
-    products: [],
-    isResEmpty : false
+    products: []
   }  
-
-  
 
   constructor(){
     super();
 
-    var inputGender= localStorage.getItem("gender")
-  
+    console.log(localStorage.getItem("sbiGender"));
+    var inputGender = localStorage.getItem("sbiGender");
+
     if (inputGender=="M"){
-      var apiURL = '/sbt/'+localStorage.getItem("inputString")+'/M';
+      var apiURL = '/sbi/'+localStorage.getItem("inputPic")+'/M';
       console.log(apiURL)
     }
     if (inputGender=="F"){
-      var apiURL = '/sbt/'+localStorage.getItem("inputString")+'/F';
+      var apiURL = '/sbi/'+localStorage.getItem("inputPic")+'/F';
       console.log(apiURL)
     }
 
     api.get(apiURL).then(res =>{
-      
+      console.log(res.data)
+
       for (let prod of Object.keys(res.data)){
         var prods = res.data[prod];
         prods.ImageName[0] = urlConvert(prods.ImageName[0])
         this.setState({products:[...this.state.products, prods]})
-          
-          this.setState({isResEmpty: true})
-
       }
-
+      
+      
     })
-    
-    
   }
 
   render() {
@@ -139,18 +129,17 @@ class SBTRes extends Component {
             </Breadcrumb.Item>
             <Breadcrumb.Item>
             <SearchOutlined />
-              <span><Link to="/search"><a>Search By Image/Text</a></Link></span>
+              <span><Link to="/search"><a>Search Results</a></Link></span>
             </Breadcrumb.Item>
             <Breadcrumb.Item>Search Results</Breadcrumb.Item>
           </Breadcrumb>
           </div>
              <Row>
                <Col span={24}>
-                 <p className="pageHeading">Search Results for "{localStorage.getItem("inputString")}"</p>
+                 <p className="pageHeading">Search Results for "{localStorage.getItem("inputPic")}"</p>
                </Col>
              </Row>
 
-             
              {this.state.products.map(products => 
              <div className="itemContainer" key={products.PId}>
               
@@ -165,7 +154,7 @@ class SBTRes extends Component {
                 
                 <p className="productTitle">Name: {products.PName} </p>
                 <p className="productDetail">Price: {products.PPrice} </p>
-                <p className="productDetail">Fabric {products.Fabric} </p>
+                <p className="productDetail">Fabric: {products.Fabric} </p>
                 <p className="productDetail">Color: {products.Color} </p>
                 
                 </Col>
@@ -173,12 +162,18 @@ class SBTRes extends Component {
                 
                 <div className="openProductbtn">
                 <Button><a href={products.Link} target="blank">Open Product!</a></Button>
-                </div>  
+                </div>
+                                
                 </Col>
-                <Col span={1}>            
+                <Col span={1}>
+                                
                 </Col>
               </Row>
+               
+
              </div>
+             
+             
              )}
 
            </Content>
@@ -191,4 +186,4 @@ class SBTRes extends Component {
   }
 }
 
-export default SBTRes;
+export default SBIRes;

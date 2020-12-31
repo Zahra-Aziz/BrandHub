@@ -5,6 +5,7 @@ import App from './App';
 import Search from './Features/Search'
 import Login from './Auth/Login'
 import SBTRes from './Features/SBTRes'
+import SBIRes from './Features/SBIRes'
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 
@@ -16,6 +17,7 @@ ReactDOM.render(
       <Route exact path="/search" component={Search}/>
       <Route exact path="/login" component={Login}/>
       <Route exact path="/search/SBTRes" component={SBTRes}/>
+      <Route exact path="/search/SBIRes" component={SBIRes}/>
     </Switch>
     </BrowserRouter>,
   //</React.StrictMode>,

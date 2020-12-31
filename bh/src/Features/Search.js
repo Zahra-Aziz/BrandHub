@@ -1,25 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { Button } from 'antd';
 import { Layout } from 'antd';
 import { Typography } from 'antd';
 import logo from '../assets/Logo.png';
-import bg from '../assets/bg.jpg';
 import fb from '../assets/fb.PNG';
-import men from '../assets/men.jpg'
 import insta from '../assets/insta.PNG';
 import { Row, Col } from 'antd';
 import { Breadcrumb } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
-import {Route , Switch, Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import './Search.css';
 import '../App.css';
-import { Input, Form } from 'antd';
+import { Input } from 'antd';
 import { Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import axios from 'axios'
 import SBTRes from './SBTRes'
-
-
 
 
 const { Title } = Typography;
@@ -38,24 +33,42 @@ const props = {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        console.log(info.file.name);
+        localStorage.setItem("inputPic", info.file.name);
+    } else if (info.file.status === 'error') {
+        console.log(info.file.name);
+        localStorage.setItem("inputPic", info.file.name);
       }
     },
   };
 
 function SearchComponent(){
-    const onFinishh = (value) => {
-        // localStorage.setItem("searchString", value.searchString);
-        console.log(value)
-    };
-    const [input, setInput] = useState("");
+    const [inputString, setInputString] = useState(null)
+    const [inputPic, setInputPic] = useState(null)
 
-    useEffect(() => {
-        if (input !== "")
-            console.log(input);
-    }, [input]);
+    function getData(val){
+        setInputString(val.target.value)
+    }
+    function getPic(val){
+        setInputPic(val.target.value)
+    }
+    function sendPicDataMale(){
+        localStorage.setItem("sbiGender","M")
+    }
+    function sendPicDataFemale(){
+        localStorage.setItem("sbiGender","F")
+    }
+    function sendDataMale(){
+        console.log(inputString);
+        localStorage.setItem("inputString", inputString);
+        localStorage.setItem("gender", "M");
+    }
+    function sendDataFemale(){
+        console.log(inputString);
+        localStorage.setItem("inputString", inputString);
+        localStorage.setItem("gender", "F");
+    }
+
     return(
     <>
     <div className="Search">
@@ -115,24 +128,36 @@ function SearchComponent(){
                                                 <p className="card-title">For Men</p>
                                                 <p>Search by Text</p>
                                          
-                                                    <Input placeholder="Search" />
+                                                    <Input placeholder="Search" onChange={getData}/>
                                                     
                                                 <div className="search">
                                                 <Link to="/search/SBTRes">
-                                                <Button type="primary" htmlType="submit">Search</Button>
+                                                <Button onClick={sendDataMale} type="primary" htmlType="submit">Search</Button>
                                                 </Link>
                                                 </div>
                                                 
                                                 <div className="horizontal-line">
 
                                                 </div>
-                                                <p>Search by Image</p>
+                                                <p style={{marginBottom: "5px"}}>Search by Image</p>
                                                 
-                                                <Upload {...props}>
-                                                <div className="upload">
-                                                <Button icon={<UploadOutlined />}>Upload Image</Button>
-                                                </div>
-                                                </Upload>
+                                                <Row>
+                                                    <Col span={12}>
+                                                        <Upload {...props}>  
+                                                        <div className="upload">
+                                                            <Button icon={<UploadOutlined />}>Upload</Button>
+                                                        </div>
+                                                        </Upload>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                    <Link to="/search/SBIRes">
+                                                        <div className="searchImage">
+                                                            <Button onClick={sendPicDataMale} type="primary">Search</Button>
+                                                        </div>
+                                                        </Link>
+                                                    </Col>
+                                                </Row>
+
                                             </div>
                                         </Col>
                                         <Col span={4}>
@@ -141,17 +166,36 @@ function SearchComponent(){
                                             <div className="container-search-for-men">
                                                 <p className="card-title">For Women</p>
                                                 <p>Search by Text</p>
-                                                <Input placeholder="Search" />
+                                                <Input placeholder="Search" onChange={getData}/>
+
+                                                <div className="search">
+                                                <Link to="/search/SBTRes">
+                                                <Button onClick={sendDataFemale} type="primary" htmlType="submit">Search</Button>
+                                                </Link>
+                                                </div>
+
                                                 <div className="horizontal-line">
 
                                                 </div>
-                                                <p>Search by Image</p>
+                                                <p style={{marginBottom: "5px"}}>Search by Image</p>
                                                 
-                                                <Upload {...props}>
-                                                <div className="upload">
-                                                <Button icon={<UploadOutlined />}>Upload Image</Button>
-                                                </div>
-                                                </Upload>
+                                                <Row>
+                                                    <Col span={12}>
+                                                        <Upload {...props}>  
+                                                        <div className="upload">
+                                                            <Button icon={<UploadOutlined />}>Upload</Button>
+                                                        </div>
+                                                        </Upload>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                    <Link to="/search/SBIRes">
+                                                        <div className="searchImage">
+                                                            <Button onClick={sendPicDataFemale} type="primary">Search</Button>
+                                                        </div>
+                                                        </Link>
+                                                    </Col>
+                                                </Row>
+
                                             </div>
                                         </Col>
                                     </Row>
