@@ -53,44 +53,44 @@ class SearchByImage(Resource):
 		
 		brandsName=['Limelight','khaadi','sapphire','Outfitters','Jdot','Cambridge'] #all brands
 		product_count=1
-		finalResult={}
+		finalResult={} #will contain all the final products to be returned
 		for (score, resultID) in results:
 			
-			#Comapre resultID and get corresponding brand name to iterate thru db
+			#Comapre resultID and get corresponding brand name to iterate through db
 			if (resultID.startswith('L')):
-				brand=brandsName[0]
+				brand=brandsName[0] #brand is limelight as id starts with L
 			elif (resultID.startswith('K')):
-				brand=brandsName[1]
+				brand=brandsName[1] #brand is khaadi as id starts with K
 			elif (resultID.startswith('S')):
-				brand=brandsName[2]
+				brand=brandsName[2] #brand is sapphire as id starts with S
 			elif (resultID.startswith('O')):
-				brand=brandsName[3]
+				brand=brandsName[3] #brand is outfitters as id starts with O
 			elif (resultID.startswith('J')):
-				brand=brandsName[4]
+				brand=brandsName[4] #brand is jdot as id starts with J
 			elif (resultID.startswith('C')):
-				brand=brandsName[5]
+				brand=brandsName[5] #brand is cambridge as id starts with C
 			db=client[brand]
 			
-			if (gender=='F'):
+			if (gender=='F'): #female query
 				dict1=db.Women.find_one({'PId': resultID}) #get data from female db
-			else:
+			else: #male query
 				dict1=db.Men.find_one({'PId': resultID}) #get data from male db
 			
 			
 			prod={} #will contain each individual product
 
-			if (dict1!=None):
+			if (dict1!=None): #if product exists
 				prod={}
 				for key,val in dict1.items():
-					if (key!='featureVectors' and key!='textSearch' and key!='_id'): #cuz featureVectors are very long and output gets confusing
+					if (key!='featureVectors' and key!='textSearch' and key!='_id'): #except for these 3 keys and their values, store the rest of data in prod
 						prod[key]=val
 						
 						print(str(key)+ " : "+str(val))
 
 				
-			finalResult[product_count]=prod
+			finalResult[product_count]=prod #add individual products to the resultant products dictionary
 			product_count+=1
-		return finalResult
+		return finalResult #return dictionary containing resulatant products
 
 class ColorDescriptor:
 	def __init__(self, bins):
@@ -133,7 +133,7 @@ class ColorDescriptor:
 		return features
 
 class Searcher:
-	def search( queryFeatures,gender, category,limit = 10):
+	def search( queryFeatures,gender, category,limit = 10): #function to search by image by passing feature vectors of query image, gender,category and limit indicates that only top 10 products will be returned
 		results = {}
 		client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
 		brandsWomenName=['Limelight','khaadi','sapphire','Jdot'] #women brands
@@ -185,8 +185,8 @@ class Searcher:
 				for key, value in product.items():
 					fVector=literal_eval(value) #convert string from db into list
 		   
-					resultValue=1.5 #max distance value
-					d=2
+					resultValue=1.2 #max distance value
+					d=2 #initializing distance
 					check=0
 					for f in fVector:
 						if (check!=1): #check=1 means distance of FV of product is greater than 1.5 so skip remaining FV of same product
