@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import pymongo
 from pymongo import MongoClient
 
@@ -77,10 +71,8 @@ def CleanData(string):
             finalStr+=x[i][0]
             finalStr+=" "
         i+=1
-    return finalStr
+    return finalStr #return cleaned string
 
-
-# In[4]:
 
 
 #get data from db
@@ -205,16 +197,6 @@ for g in gender: #iterate for both genders
                 db_collection.update_one(  { 'PId':PID} , { '$set': { 'textSearch' : cleanedstring } } )
         gender_check=False
         s+=1
-
-
-# In[ ]:
-
-
-
-   
-
-
-# In[ ]:
 
 
 
