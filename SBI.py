@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_cors import CORS
 from flask_restful import Api,Resource
 import pymongo
 from pymongo import MongoClient
@@ -30,7 +29,6 @@ from tensorflow import keras
 
 app=Flask(__name__)
 api=Api(app)
-CORS(app)
 
 class SearchByImage(Resource):
 	def get(self,imagePath,gender):
@@ -39,58 +37,46 @@ class SearchByImage(Resource):
 		
 
 		from tensorflow import keras
+
 		mod=keras.models.load_model("TopBottom_model")
+		mod2=keras.models.load_model("EasternWestern_model")
 		category=""
-		category=Topbottom1.computeCategory(imagePath,mod)
-		print(category)
-
-
-		query = cv2.imread(imagePath)
+		category=Topbottom1.computeCategory(searchImagePath,mod)
+		TypeEW=""
+		TypeEW=EasternWestern1.computeCategory(searchImagePath,mod2)
+		query = cv2.imread(searchImagePath)
 		features = cd.describe(query) #create feature vectors of query
-		results=Searcher.search(features,gender,category) #pass gender of search and feature vector of search image
+		results=Searcher.search(features,gender,TypeEW,category,10) #pass gender of search and feature vector of search image
 
 		client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
 		
 		brandsName=['Limelight','khaadi','sapphire','Outfitters','Jdot','Cambridge'] #all brands
 		product_count=1
-		finalResult={} #will contain all the final products to be returned
+		finalResult={}
 		for (score, resultID) in results:
-			
-			#Comapre resultID and get corresponding brand name to iterate through db
-			if (resultID.startswith('L')):
-				brand=brandsName[0] #brand is limelight as id starts with L
-			elif (resultID.startswith('K')):
-				brand=brandsName[1] #brand is khaadi as id starts with K
-			elif (resultID.startswith('S')):
-				brand=brandsName[2] #brand is sapphire as id starts with S
-			elif (resultID.startswith('O')):
-				brand=brandsName[3] #brand is outfitters as id starts with O
-			elif (resultID.startswith('J')):
-				brand=brandsName[4] #brand is jdot as id starts with J
-			elif (resultID.startswith('C')):
-				brand=brandsName[5] #brand is cambridge as id starts with C
-			db=client[brand]
-			
-			if (gender=='F'): #female query
-				dict1=db.Women.find_one({'PId': resultID}) #get data from female db
-			else: #male query
-				dict1=db.Men.find_one({'PId': resultID}) #get data from male db
-			
-			
+		    if (gender=='F'):
+		        db=client['Female']
+		    else:
+		        db=client['Male']
+		    db_collection=db[TypeEW]
+		    
+		    dict1=db_collection.find_one({'PId': resultID}) #get data from male db
+					
+					
 			prod={} #will contain each individual product
 
-			if (dict1!=None): #if product exists
+			if (dict1!=None):
 				prod={}
 				for key,val in dict1.items():
-					if (key!='featureVectors' and key!='textSearch' and key!='_id'): #except for these 3 keys and their values, store the rest of data in prod
+					if (key!='featureVectors' and key!='textSearch' and key!='_id'): #cuz featureVectors are very long and output gets confusing
 						prod[key]=val
 						
 						print(str(key)+ " : "+str(val))
 
 				
-			finalResult[product_count]=prod #add individual products to the resultant products dictionary
+			finalResult[product_count]=prod
 			product_count+=1
-		return finalResult #return dictionary containing resulatant products
+		return finalResult
 
 class ColorDescriptor:
 	def __init__(self, bins):
@@ -124,7 +110,7 @@ class ColorDescriptor:
 		
 		angle=0
 		ellipMask = np.zeros(image.shape[:2], dtype = "uint8")
-		ellipMask=cv2.ellipse(ellipMask, (cX, cY), (axesX, axesY), angle, 0, 360, 255, -1) #90 angle for vertical ellipse?
+		ellipMask=cv2.ellipse(ellipMask, (cX, cY), (axesX, axesY), angle, 0, 360, 255, -1) 
 		# extract a color histogram from the elliptical region and
 		# update the feature vector
 		hist = self.histogram(image, ellipMask)
@@ -133,88 +119,98 @@ class ColorDescriptor:
 		return features
 
 class Searcher:
-	def search( queryFeatures,gender, category,limit = 10): #function to search by image by passing feature vectors of query image, gender,category and limit indicates that only top 10 products will be returned
+	def search( queryFeatures,gender,typeEW, category,limit = 10):
 		results = {}
-		client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
-		brandsWomenName=['Limelight','khaadi','sapphire','Jdot'] #women brands
-		brandsMenName=['Cambridge','Outfitters','Jdot'] #men brands
-		
-		if (gender=='F'): 
-			brands=brandsWomenName  #specify the brands and gender for women to loop thru later on
-			Gender='Women'
-		else:
-			brands=brandsMenName #specify the brands and gender for men to loop thru later on
-			Gender='Men'
-		
-		#query to get id
-		query1 = {'PId': {'$exists': 1},}
-		projection1 = {'_id': 0, 'PId': 1}
-		
-		#query to get type of products
-		queryT = {'Type': {'$exists': 1},}
-		projectionT = {'_id': 0, 'Type': 1}
-		
-		#query to get feature vectors
-		queryFV = {'featureVectors': {'$exists': 1},}
-		projectionFV = {'_id': 0, 'featureVectors': 1}
-		
-		
-		brand_count=0
-		print("Gender is: "+ Gender)
-		print("Calculating distances..")
-		for b in brands: #iterate all brands for specific gender
-			db = client[brands[brand_count]] #tell db which brand you're accessing
-			idd = list(db[Gender].find(query1, projection1)) #get id of the products
-			typels=list(db[Gender].find(queryT, projectionT))
-			titles=[]
-			types=[]
-			for dat in idd:
-				for key,value in dat.items():
-					titles.append(value) #store id in titles array to make accessing from db easy later on
-					
-			for type1 in typels:
-				for key,value in type1.items():
-					types.append(value) #store type of product in types array to retrieve type of products
-		   
-			
-			products = list(db[Gender].find(queryFV, projectionFV)) #access women portion of brand from db
-			product_count=0
-			for product in products: #iterate thru all products in db
-				image_count=1
-				id_val=""
-				for key, value in product.items():
-					fVector=literal_eval(value) #convert string from db into list
-		   
-					resultValue=1.2 #max distance value
-					d=2 #initializing distance
-					check=0
-					for f in fVector:
-						if (check!=1): #check=1 means distance of FV of product is greater than 1.5 so skip remaining FV of same product
-							if (category=="bottom"): #if category is bottom then only show products whose type is trouser
-								if (types[product_count]=="Trouser" ):
-									d = Searcher.chi2_distance(f, queryFeatures) #pass indices from feature vectors to calculate distance
+        client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
+       
+        
+        if (gender=='F'): 
+            Gender='Female'
+        else:
+            Gender='Male'
+        db = client[Gender]
+     
+        queryT = {'Category': {'$exists': 1},}
+        projectionT = {'_id': 0, 'Category': 1}
+        
+        #query to get feature vectors
+        queryFV = {'featureVectors': {'$exists': 1},}
+        projectionFV = {'_id': 0, 'featureVectors': 1}
+        
+        
+        brand_count=0
+        print("Gender is: "+ Gender)
+        print("Calculating distances..")
+        
+        db_collection=db[typeEW]
+            
+        
+        
+#             idd = list(db[Gender].find(query1, projection1)) #get id of the products
+        typels=list(db_collection.find(queryT, projectionT))
+        titles=[]
+        types=[]
+#             for dat in idd:
+#                 for key,value in dat.items():
+#                     titles.append(value) #store id in titles array to make accessing from db easy later on
 
-							else:
-								if (types[product_count]!="Trouser" ):
-									d = Searcher.chi2_distance(f, queryFeatures) #pass indices from feature vectors to calculate distance
+        for type1 in typels:
+            for key,value in type1.items():
+                types.append(value) #store type of product in types array to retrieve type of products
+        print(len(typels))
 
-							if (d>1.2): #if distance is greater than max value then don't loop further thru images
-								check=1
-								break;
-							if d<resultValue:
-								resultValue=d
-					if (d<1.2): #if distance is less than 1.5 then store in results
-						results[titles[product_count]] = resultValue #store the distance of products with its title in dictionary
-						
-					else:
-						break; #if distance is greater than 1.5, don't loop further
-			
-				product_count+=1
-			brand_count+=1
 
-		results = sorted([(v, k) for (k, v) in results.items()]) #sort result dictionary
-		print("Done!")
-		return results[:limit] #returns 10 top products
+        products = list(db_collection.find(queryFV, projectionFV)) #access women portion of brand from db
+        print(len(products))
+        product_count=0
+        for product in products: #iterate thru all products in db
+            image_count=1
+            id_val=""
+            check_wrong=0
+            for key, value in product.items():
+                fVector=literal_eval(value) #convert string from db into list
+
+                resultValue=1.2 #max distance value
+                d=2
+                check=0
+                check_wrong=0
+                check_okay=0
+                if (category=="bottom" and types[product_count]=="Bottom"):
+                    check_okay=1
+                elif (category=="top" and types[product_count]=="Top"):
+                    check_okay=1
+                else:
+                    check_okay=0
+#                 print(check_okay)
+                if (check_okay==1):
+#                     print("here???")
+                    for f in fVector:
+                       
+                        if (check!=1): #check=1 means distance of FV of product is greater than 1.5 so skip remaining FV of same product
+                           
+                            d = Searcher.chi2_distance(f, queryFeatures) #pass indices from feature vectors to calculate distance
+                            print(d)
+                            
+                            if (d>2): #if distance is greater than max value then don't loop further thru images
+                                check=1
+                                break;
+                            if d<resultValue:
+                                resultValue=d
+                    if (d<2): #if distance is less than 1.5 then store in results
+                        dict2=db_collection.find_one({'featureVectors':str(fVector)})
+#                         print(dict2)
+                        results[dict2['PId']] = resultValue #store the distance of products with its title in dictionary
+                        
+                    else:
+                        break; #if distance is greater than 1.5, don't loop further
+
+            product_count+=1
+        brand_count+=1
+
+        results = sorted([(v, k) for (k, v) in results.items()]) #sort result dictionary
+        print("Done!"+str(len(results)))
+        return results[:limit] #returns 10 top ptoducts
+
 
 	def chi2_distance(histA, histB, eps = 1e-10):
 		# compute the chi-squared distance
@@ -224,10 +220,6 @@ class Searcher:
 		return d
 
 	
-
-
-	
-		
 
 api.add_resource(SearchByImage,"/sbi/<string:imagePath>/<string:gender>")
 
