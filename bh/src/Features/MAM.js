@@ -71,8 +71,17 @@ function MAM(){
                 <Col span={24}>
                         <div className="bg-img">
                             <p className="heading-upper">Make a Match</p>
-                        
+
+                            <Row>
+
+                            <Col span={10}>
+                                <div className="upload">
+                                    <Button icon={<UploadOutlined />}>Upload</Button>
+                                </div>
+                            </Col>
+                            </Row>
                         </div>
+                        
                     </Col>
             </Row>
         </Layout>

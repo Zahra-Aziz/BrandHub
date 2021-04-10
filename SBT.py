@@ -88,6 +88,7 @@ def TextSearchGender(gender): #this function returns textsearch for specified ge
     i=0
     titles=[]
     text=[]
+    idx_array=[0,0]
     
     
     if (gender=='F'):
@@ -189,4 +190,4 @@ def TextSearch(inputText,searchText,titles,gender,array_idx): #this function com
 api.add_resource(SearchByText,"/sbt/<string:searchInput>/<string:gender>")
 
 if __name__=="__main__":
-	app.run(debug=True)
+	app.run(debug=True, port=5001)

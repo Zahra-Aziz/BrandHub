@@ -54,13 +54,13 @@ class SearchByImage(Resource):
 		product_count=1
 		finalResult={}
 		for (score, resultID) in results:
-		    if (gender=='F'):
-		        db=client['Female']
-		    else:
-		        db=client['Male']
-		    db_collection=db[TypeEW]
-		    
-		    dict1=db_collection.find_one({'PId': resultID}) #get data from male db
+			if (gender=='F'):
+				db=client['Female']
+			else:
+				db=client['Male']
+			db_collection=db[TypeEW]
+			
+			dict1=db_collection.find_one({'PId': resultID}) #get data from male db
 					
 					
 			prod={} #will contain each individual product
@@ -121,95 +121,95 @@ class ColorDescriptor:
 class Searcher:
 	def search( queryFeatures,gender,typeEW, category,limit = 10):
 		results = {}
-        client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
-       
-        
-        if (gender=='F'): 
-            Gender='Female'
-        else:
-            Gender='Male'
-        db = client[Gender]
-     
-        queryT = {'Category': {'$exists': 1},}
-        projectionT = {'_id': 0, 'Category': 1}
-        
-        #query to get feature vectors
-        queryFV = {'featureVectors': {'$exists': 1},}
-        projectionFV = {'_id': 0, 'featureVectors': 1}
-        
-        
-        brand_count=0
-        print("Gender is: "+ Gender)
-        print("Calculating distances..")
-        
-        db_collection=db[typeEW]
-            
-        
-        
+		client = pymongo.MongoClient("mongodb+srv://zahra:passmongodb@cluster0.femwg.mongodb.net/test?retryWrites=true&w=majority")
+	   
+		
+		if (gender=='F'): 
+			Gender='Female'
+		else:
+			Gender='Male'
+		db = client[Gender]
+	 
+		queryT = {'Category': {'$exists': 1},}
+		projectionT = {'_id': 0, 'Category': 1}
+		
+		#query to get feature vectors
+		queryFV = {'featureVectors': {'$exists': 1},}
+		projectionFV = {'_id': 0, 'featureVectors': 1}
+		
+		
+		brand_count=0
+		print("Gender is: "+ Gender)
+		print("Calculating distances..")
+		
+		db_collection=db[typeEW]
+			
+		
+		
 #             idd = list(db[Gender].find(query1, projection1)) #get id of the products
-        typels=list(db_collection.find(queryT, projectionT))
-        titles=[]
-        types=[]
+		typels=list(db_collection.find(queryT, projectionT))
+		titles=[]
+		types=[]
 #             for dat in idd:
 #                 for key,value in dat.items():
 #                     titles.append(value) #store id in titles array to make accessing from db easy later on
 
-        for type1 in typels:
-            for key,value in type1.items():
-                types.append(value) #store type of product in types array to retrieve type of products
-        print(len(typels))
+		for type1 in typels:
+			for key,value in type1.items():
+				types.append(value) #store type of product in types array to retrieve type of products
+		print(len(typels))
 
 
-        products = list(db_collection.find(queryFV, projectionFV)) #access women portion of brand from db
-        print(len(products))
-        product_count=0
-        for product in products: #iterate thru all products in db
-            image_count=1
-            id_val=""
-            check_wrong=0
-            for key, value in product.items():
-                fVector=literal_eval(value) #convert string from db into list
+		products = list(db_collection.find(queryFV, projectionFV)) #access women portion of brand from db
+		print(len(products))
+		product_count=0
+		for product in products: #iterate thru all products in db
+			image_count=1
+			id_val=""
+			check_wrong=0
+			for key, value in product.items():
+				fVector=literal_eval(value) #convert string from db into list
 
-                resultValue=1.2 #max distance value
-                d=2
-                check=0
-                check_wrong=0
-                check_okay=0
-                if (category=="bottom" and types[product_count]=="Bottom"):
-                    check_okay=1
-                elif (category=="top" and types[product_count]=="Top"):
-                    check_okay=1
-                else:
-                    check_okay=0
+				resultValue=1.2 #max distance value
+				d=2
+				check=0
+				check_wrong=0
+				check_okay=0
+				if (category=="bottom" and types[product_count]=="Bottom"):
+					check_okay=1
+				elif (category=="top" and types[product_count]=="Top"):
+					check_okay=1
+				else:
+					check_okay=0
 #                 print(check_okay)
-                if (check_okay==1):
+				if (check_okay==1):
 #                     print("here???")
-                    for f in fVector:
-                       
-                        if (check!=1): #check=1 means distance of FV of product is greater than 1.5 so skip remaining FV of same product
-                           
-                            d = Searcher.chi2_distance(f, queryFeatures) #pass indices from feature vectors to calculate distance
-                            print(d)
-                            
-                            if (d>2): #if distance is greater than max value then don't loop further thru images
-                                check=1
-                                break;
-                            if d<resultValue:
-                                resultValue=d
-                    if (d<2): #if distance is less than 1.5 then store in results
-                        dict2=db_collection.find_one({'featureVectors':str(fVector)})
+					for f in fVector:
+					   
+						if (check!=1): #check=1 means distance of FV of product is greater than 1.5 so skip remaining FV of same product
+						   
+							d = Searcher.chi2_distance(f, queryFeatures) #pass indices from feature vectors to calculate distance
+							print(d)
+							
+							if (d>2): #if distance is greater than max value then don't loop further thru images
+								check=1
+								break;
+							if d<resultValue:
+								resultValue=d
+					if (d<2): #if distance is less than 1.5 then store in results
+						dict2=db_collection.find_one({'featureVectors':str(fVector)})
 #                         print(dict2)
-                        results[dict2['PId']] = resultValue #store the distance of products with its title in dictionary
-                        
-                    else:
-                        break; #if distance is greater than 1.5, don't loop further
+						results[dict2['PId']] = resultValue #store the distance of products with its title in dictionary
+						
+					else:
+						break; #if distance is greater than 1.5, don't loop further
 
-            product_count+=1
-        brand_count+=1
+			product_count+=1
+		brand_count+=1
 
-        results = sorted([(v, k) for (k, v) in results.items()]) #sort result dictionary
-        print("Done!"+str(len(results)))
-        return results[:limit] #returns 10 top ptoducts
+		results = sorted([(v, k) for (k, v) in results.items()]) #sort result dictionary
+		print("Done!"+str(len(results)))
+		return results[:limit] #returns 10 top ptoducts
 
 
 	def chi2_distance(histA, histB, eps = 1e-10):
@@ -224,4 +224,4 @@ class Searcher:
 api.add_resource(SearchByImage,"/sbi/<string:imagePath>/<string:gender>")
 
 if __name__=="__main__":
-	app.run(debug=True)
+	app.run(debug=True, port=5000)
