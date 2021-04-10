@@ -13,6 +13,7 @@ import { Breadcrumb } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
 import {Route , Switch, Link} from "react-router-dom";
 import Search from './Features/Search';
+import MAM from './Features/MAM';
 
 
 const { Title } = Typography;
@@ -90,7 +91,7 @@ function App() {
                 <p className="para-feature-left">Have something in mind? want to explore new options and items? You're at the right place. Search by text\image allows you to search your desired product using simple keywords or any image, taken from the camera or from your gallery. </p>
                 
                 <div className="btn-shopforme">          
-                <Link to="/search"><Button type="primary">
+                <Link to="/Search"><Button type="primary">
                       Search
                   </Button></Link>
                 </div> 
@@ -132,6 +133,28 @@ function App() {
                 
             </Col>
           </Row>
+
+          <Row>
+              <Col span={16}>
+                <div className="cont-feature-left">
+                <h1 className="title-feature">Make a Match</h1>
+                <p className="para-feature-left">Can't figure out what to match with a specific clothing item? We have you covered! Just upload an image of item you want matching with. Specify what you want matched with it and voila! We'll give you the best combinations. </p>
+                
+                <div className="btn-shopforme">          
+                <Link to="/mam"><Button type="primary">
+                      Match
+                  </Button></Link>
+                </div> 
+                </div>
+
+              </Col>
+              <Col span={8}>
+                <div className="feature-img-right">
+                  <img src={F1}/>
+                </div>
+              </Col>
+          </Row>
+
 
         </Content>
         <Footer>Copyrights © 2020 BrandHub Pakistan Limited. All rights reserved </Footer>

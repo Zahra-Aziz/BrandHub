@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Search from './Features/Search'
+import MAM from './Features/MAM';
 import Login from './Auth/Login'
 import SBTRes from './Features/SBTRes'
 import SBIRes from './Features/SBIRes'
@@ -15,6 +16,7 @@ ReactDOM.render(
     <Switch>
       <Route exact path="/" component={App}/>
       <Route exact path="/search" component={Search}/>
+      <Route exact path="/MAM" component={MAM}/>
       <Route exact path="/login" component={Login}/>
       <Route exact path="/search/SBTRes" component={SBTRes}/>
       <Route exact path="/search/SBIRes" component={SBIRes}/>
