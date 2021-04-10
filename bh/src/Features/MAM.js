@@ -5,6 +5,7 @@ import { Typography } from 'antd';
 import logo from '../assets/Logo.png';
 import fb from '../assets/fb.PNG';
 import insta from '../assets/insta.PNG';
+import bg from '../assets/halfbg.PNG';
 import { Row, Col } from 'antd';
 import { Breadcrumb } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
@@ -65,8 +66,18 @@ function MAM(){
                 </div>
 
             </Header>
+            
+            <Row>
+                <Col span={24}>
+                        <div className="bg-img">
+                            <p className="heading-upper">Make a Match</p>
+                        
+                        </div>
+                    </Col>
+            </Row>
+        </Layout>
             <Footer>Copyrights © 2020 BrandHub Pakistan Limited. All rights reserved </Footer>
-            </Layout>
+            
        
 
     </div>
