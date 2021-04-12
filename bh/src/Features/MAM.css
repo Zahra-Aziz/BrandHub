@@ -13,9 +13,22 @@
     height: 500px;
     width: 100%;
 }
+.container-upper{
+    background-image: url("../assets/bg.jpg");
+    background-position-y: center;
+    background-position-x: center;
+    background-color: black;
+    margin-bottom: 200px;
+    height: 500px;
+}
+.container-upper .overlay{
+    background-image: linear-gradient(to right,#82c4ceb9,#6c6fcfc0, #d373dcb4);
+    height: inherit;
+    align-items: center;
+}
 .heading-upper{
     text-align: center;
-    padding-top: 30px;
+    padding-top: 10px;
     font-size: 50px;
     font-style: bold;
     margin-left: auto;
@@ -23,12 +36,79 @@
     color: white;
     align-self: center;
 }
-.upload .ant-btn{
-    margin-left: 40px;
-    background-color: rgb(100, 4, 79);
+.uploadmam .ant-btn{
+    background-color: rgba(233, 232, 233, 0);
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     border: 2px solid rgb(223, 223, 223);
     color: rgb(223, 223, 223);
-    margin-bottom: 10px;
+    margin-top: 25px;
+    align-items: center;
 }
+.btn-makeamatchmam .ant-btn-primary{
+    /* background-color: rgb(0, 175, 175); b61586 ec41b9 */
+    background-image: linear-gradient(rgb(255, 255, 255),white);
+    color: #b61586;
+    border-color: #b61586;
+    border-radius: 10px;
+    width: 140px;
+    font-weight: bolder;
+    margin-top: 10px;
+    box-shadow: none;
+  }
+  .btn-makeamatchmam .ant-btn-primary:hover{
+    /* background-color: rgb(0, 175, 175); */
+    background-image: linear-gradient(rgb(241, 241, 241),rgb(241, 241, 241));
+    color: #f75edd;
+    border-color: #f75edd;
+    border-radius: 10px;
+    font-weight: bolder;
+    box-shadow: none;
+  }
+.hl{
+    background-color: rgb(255, 254, 254);
+    width: 3px;
+    height: 200px;
+    margin-top: 15px;
+    margin-left: 50%;
+    margin-bottom: auto;
+    align-items: center;
+  }
+  .normal-text{
+      color: white;
+      font-size: 20px;
+      margin-top: 6px;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .upload-img{
+    width:50px;
+    margin-top: 0px;
+    margin-left: 170px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .input-field{
+      color: white;
+      text-emphasis-color: white;
+      place-content: white;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 25px;
+  }
+  .container-upload{
+    padding-top: 10px;
+    height: 250px;
+    align-items: center;
+    text-align: center;
+
+  }
+  .container-itemtype{
+    padding-top: 10px;
+    height: 250px;
+    align-items: center;
+    text-align: center;
+
+  }
+ 
